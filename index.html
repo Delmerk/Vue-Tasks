@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendiendo Vue.js</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+    <div id="app" class="container">
+        <user></user>
+        <hr>
+        <h1 v-if="message.length > 2">Hello <span v-text="message"></span></h1>
+        <h1 v-else>Write your name</h1>
+        <h1 v-show="message.length > 2" v-text="'Hola ' + message"></h1>
+        <input type="text" v-model="message">
+        <button v-on:click="reverse">Invertir</button>
+        <hr>
+        <!-- ------------------------------------------------- -->
+        <h1>Lista de Tareas</h1>
+        <h4 v-if="completedTasks">Tareas Completas: {{ completedTasks }}</h4>
+        <h4 v-if="incompletedTasks">Tareas Incompletas: {{ incompletedTasks }}</h4>
+        <ul>
+            <li v-for="task in tasks">
+                <span @click="task.completed = ! task.completed" v-bind:class="taskClasses(task)">
+                    {{task.title}}
+                </span>
+            </li>
+            <!-- <li v-for="task in tasks">
+                <span @click="task.completed = ! task.completed" v-bind:class="{
+                        'glyphicon-check': true, 
+                        'glyphicon-unchecked': ! task.completed}">
+                </span>
+            </li> -->
+            <hr>
+            <li v-for="task in tasks">
+                <span @click=" completeTask(task)" v-bind:class="taskClasses(task)">
+                    {{task.title}}
+                </span>
+            </li>
+            <li class="form-inline">
+                <input v-on:keyup.enter="addTask" v-model="newTask" type="text" class="form-control">
+                <button v-on:click="addTask" class="btn btn-success">+</button>
+            </li>
+        </ul>
+        <hr>
+        <!-- ------------------------------------------------- -->
+        <h2>{{reversedTask}}</h2>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: "",
+                newTask: "",
+                tasks: [
+                    { title: "Aprender JavaScript", completed: true },
+                    { title: "Aprender Vue.js", completed: true },
+                    { title: "Mejorar en PHP", completed: false }
+                ]
+            },
+            methods: {
+                addTask: function () {
+                    if (this.newTask.length <= 2) return alert('La tarea no puede estar vacía');
+
+                    this.tasks.push({
+                        title: this.newTask,
+                        completed: false
+                    });
+                    this.newTask = "";
+                },
+                taskClasses: function (task) {
+                    return ['glyphicon', task.completed ? 'glyphicon-check' : 'glyphicon-unchecked']
+                },
+                completeTask: function (task) {
+                    task.completed = !task.completed
+                },
+                reverse: function () {
+                    this.message = this.message.split('').reverse().join('')
+                },
+
+            },
+            computed: {
+                reversedTask: function () {
+                    return this.newTask.split('').reverse().join('');
+                },
+                completedTasks: function () {
+                    return this.tasks.filter(function (task) {
+                        return task.completed;
+                    }).length;
+                },
+                incompletedTasks: function () {
+                    return this.tasks.filter(function (task) {
+                        return !task.completed;
+                    }).length;
+                }
+
+            }
+        })
+    </script>
+</body>
+
+</html>
